@@ -2,7 +2,7 @@
 
 This NixOS expression will block all malicous IPs and update them daily.
 
-The source for the malicous IPs is lists.blocklist.de
+The source for the malicious IPs is lists.blocklist.de
 
 #Systemd
 
