@@ -2,10 +2,12 @@ pkgs:
 with pkgs;
 ''
 set -e
+echo "Running blacklist initializer"
 
 IP_SET="BlackList"
 
 # Stop if the set already exists
+echo "Checking if ip-set $IP_SET already exists"
 ${ipset}/bin/ipset -L $IP_SET >/dev/null 2>&1
 if [ $? -eq 0 ]; then
   echo "$IP_SET set already exists. Exiting."
