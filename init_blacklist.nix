@@ -1,7 +1,6 @@
 pkgs:
 with pkgs;
 ''
-set -e
 echo "Running blacklist initializer"
 
 IP_SET="BlackList"
