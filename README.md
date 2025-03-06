@@ -10,8 +10,13 @@ A systemd unit called "blacklist" will be created and will run every day at 01:0
 
 # Usage
 
-1. Add this line to your imports
+1. Add this to your flake inputs:
 ```
-''${(import <nixpkgs> {}).fetchgit { url = "https://github.com/stanipintjuk/nix-blacklist-updater"; rev = "1.0.0"}}''
+blacklist-updater = {
+  url = "github:stanipintjuk/nix-blacklist-updater";
+  inputs.nixpkgs.follows = "nixpkgs";
+};
 ```
-2. run ```nixos-rebuild switch``` and let NixOS do the rest :) 
+2. add `blacklist-updater.nixosModules.blacklist-updater` to your modules
+3. set `services.blacklist-updater.enable = true;`
+4. run ```nixos-rebuild switch``` and let NixOS do the rest :)
