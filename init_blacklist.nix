@@ -1,6 +1,6 @@
-pkgs:
-with pkgs;
-''
+pkgs: let
+inherit (pkgs) ipset iptables;
+in ''
 echo "Running blacklist initializer"
 
 IP_SET="BlackList"

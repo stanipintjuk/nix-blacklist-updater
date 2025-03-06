@@ -1,6 +1,6 @@
-pkgs:
-with pkgs;
-''
+pkgs: let
+inherit (pkgs) ipset wget;
+in ''
 # Clear ipset from previous address.
 # Ignore if it fails, because we don't care 
 
