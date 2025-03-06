@@ -29,6 +29,17 @@ with lib; {
         {option}`OnCalendar` set to the value given here.
       '';
     };
+    runInitially = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Adds the IPs from the blocklist immediately instead of waiting for the
+        first time the `updateAt` is triggered. Also disables removal of
+        filters when disabling the script. For immediate filtering, set it to
+        `true`, but to avoid deleting and newly adding all the blacklist,
+        disable it afterwards.
+      '';
+    };
     ipSetName = mkOption {
       type = types.str;
       default = "BlackList";
