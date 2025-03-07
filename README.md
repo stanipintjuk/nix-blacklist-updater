@@ -13,7 +13,7 @@ A systemd unit called "blacklist" will be created and will run every day at 01:0
 1. Add this to your flake inputs:
 ```
 blacklist-updater = {
-  url = "github:stanipintjuk/nix-blacklist-updater";
+  url = "github:miallo/nix-blacklist-updater";
   inputs.nixpkgs.follows = "nixpkgs";
 };
 ```
