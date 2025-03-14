@@ -12,7 +12,7 @@ with lib; {
     };
     blacklistedIPs = mkOption {
       type = with types; either str (listOf str);
-      example = [ "1.2.3.4" "192.168.0.1" ];
+      example = [ "1.2.3.4" "10.168.10.0/24" "2a06:4883:1000::2" ];
       default = [ ];
       description = "List of manually banned IPs";
       apply = v: if isList v then lib.strings.concatMapStrings (x: "\n" + x) v else v;
