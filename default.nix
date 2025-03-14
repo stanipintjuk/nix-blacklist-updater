@@ -1,6 +1,12 @@
 { lib, ... }:
 with lib; {
-  imports = [ ./service.nix ];
+  imports = [
+    ./service.nix
+    (lib.mkRemovedOptionModule [ "services" "blacklist-updater" "runInitially" ] ''
+      The service is now performant and can be run on every boot. This avoids
+      leaving the blocklist in place if the module is removed.
+    '')
+  ];
   options.services.blacklist-updater = {
     enable = mkEnableOption "blacklist-updater";
     blacklists = mkOption {
@@ -27,17 +33,6 @@ with lib; {
         {manpage}`systemd.time(7)`.  This is equivalent
         to adding a corresponding timer unit with
         {option}`OnCalendar` set to the value given here.
-      '';
-    };
-    runInitially = mkOption {
-      type = types.bool;
-      default = false;
-      description = ''
-        Adds the IPs from the blocklist immediately instead of waiting for the
-        first time the `updateAt` is triggered. Also disables removal of
-        filters when disabling the script. For immediate filtering, set it to
-        `true`, but to avoid deleting and newly adding all the blacklist,
-        disable it afterwards.
       '';
     };
     ipSetName = mkOption {
