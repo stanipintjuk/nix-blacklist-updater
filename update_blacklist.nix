@@ -38,7 +38,7 @@ for IP in $(cat "$BLFILE"); do
     echo "Ignoring IPv6 adress $IP"
   else
     echo "Adding adress $IP"
-    echo add "${ipSetName}" "$IP" >> "$BLFILE_PROCESSED"
+    echo -exist add "${ipSetName}" "$IP" >> "$BLFILE_PROCESSED"
   fi
 done
 ${ipset}/bin/ipset restore < "$BLFILE_PROCESSED"
