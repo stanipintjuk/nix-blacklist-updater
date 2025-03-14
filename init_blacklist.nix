@@ -14,7 +14,7 @@ fi
 
 echo "${ipSetName} doesn't exist. Creating."
 
-${ipset}/bin/ipset create "${ipSetName}" hash:ip hashsize 131072
+${ipset}/bin/ipset create "${ipSetName}" hash:ip hashsize 262144
 
 # Blacklist all addresses from this ip set
 ${iptables}/bin/iptables -I INPUT -m set --match-set ${ipSetName} src -j DROP
