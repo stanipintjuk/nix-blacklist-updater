@@ -12,9 +12,11 @@ urls=(
 
 # Output file
 BLFILE="/tmp/ipblacklist.txt"
+BLFILE_PROCESSED="/tmp/ipblacklist_processed.txt"
 
 # Empty the output file if it exists
 > "$BLFILE"
+> "$BLFILE_PROCESSED"
 
 # Download the blacklist and add it to a file
 for url in "''${urls[@]}"; do
@@ -36,7 +38,8 @@ for IP in $(cat "$BLFILE"); do
     echo "Ignoring IPv6 adress $IP"
   else
     echo "Adding adress $IP"
-    ${ipset}/bin/ipset add "${ipSetName}" $IP
+    echo add "${ipSetName}" "$IP" >> "$BLFILE_PROCESSED"
   fi
 done
+${ipset}/bin/ipset restore < "$BLFILE_PROCESSED"
 ''
