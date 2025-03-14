@@ -45,5 +45,10 @@ with lib; {
       default = "BlackList";
       description = "Name of ipset SETNAME";
     };
+    ipV6SetName = mkOption {
+      type = types.str;
+      default = "BlackList6";
+      description = "Name of ipset SETNAME for IPv6 addresses";
+    };
   };
 }
