@@ -1,38 +1,42 @@
-pkgs:
-with pkgs;
-''
+{ pkgs, config }: let
+inherit (pkgs) ipset wget;
+inherit (config.services.blacklist-updater) blacklists ipSetName blacklistedIPs;
+in ''
 # Clear ipset from previous address.
 # Ignore if it fails, because we don't care 
 
-echo "Setting required variables"
-IP_SET="BlackList"
-
 set -e
-BLURL="https://lists.blocklist.de/lists/all.txt"
+urls=(
+  ${blacklists}
+)
+
+# Output file
 BLFILE="/tmp/ipblacklist.txt"
 
+# Empty the output file if it exists
+> "$BLFILE"
+
 # Download the blacklist and add it to a file
-echo "Downloading blacklist..."
-${wget}/bin/wget $BLURL -O "$BLFILE"
+for url in "''${urls[@]}"; do
+  echo "Downloading blacklist '$url'..."
+  ${wget}/bin/wget -q -O - "$url" >> "$BLFILE"
+  echo >> "$BLFILE" # Add a newline separator
+done
 
-# Do something like this in case you want any extra blacklisted ips
-#echo "
-#94.234.186.42 
-#94.234.34.172" >> $BLFILE
+# blacklist manual ips
+echo "${blacklistedIPs}">> $BLFILE
 
-echo "Clearing $IP_SET ip-set..."
-${ipset}/bin/ipset flush "$IP_SET"
+${import ./clear_blacklist.nix { inherit pkgs config; }}
 
-echo "Updating ip:s to $IP_SET ip-set"
+echo "Updating ip:s to ${ipSetName} ip-set"
 # Create an ip set and add each ip to it one by one
 for IP in $(cat "$BLFILE"); do
   # Jump over ipv6 adresses
   if [[ $IP =~ ^(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))$ ]]; then
     echo "Ignoring IPv6 adress $IP"
-  else 
+  else
     echo "Adding adress $IP"
-    ${ipset}/bin/ipset add "$IP_SET" $IP
+    ${ipset}/bin/ipset add "${ipSetName}" $IP
   fi
 done
-
 ''
