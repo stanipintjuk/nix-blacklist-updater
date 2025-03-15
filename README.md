@@ -1,3 +1,8 @@
+# Repo has been moved
+The development has moved to another repo ([link to new repo](https://github.com/miallo/nix-blocklist-updater))
+
+this repository will no longer receive any more updates, so use the other one.
+
 # Blacklist Updater For NixOS
 
 This NixOS expression will block all malicous IPs and update them daily.
